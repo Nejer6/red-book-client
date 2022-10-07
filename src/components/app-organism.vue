@@ -1,12 +1,14 @@
 <template>
-<div>
 
-</div>
+<p>{{organism.nameRussian}}</p>
+
 </template>
 
 <script>
 export default {
-  name: "app-organism"
+  name: "app-organism",
+
+  props: ["organism"]
 }
 </script>
 

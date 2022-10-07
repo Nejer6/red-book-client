@@ -1,25 +1,16 @@
 <template>
-<div>
-  <app-map />
-  <app-menu />
-</div>
+  <div>
+    <main-page/>
+  </div>
 </template>
 
 <script>
-import AppMap from "@/components/app-map";
-import AppMenu from "@/components/app-menu";
+import MainPage from "@/components/main-page";
+
 export default {
   name: 'App',
-
-  data() {
-    return {
-      selectedOrganisms: []
-    }
-  },
-
   components: {
-    AppMenu,
-    AppMap
+    MainPage
   }
 }
 </script>
