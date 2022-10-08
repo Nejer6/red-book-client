@@ -13,8 +13,8 @@
 
     <!--Поисковик и фильтры-->
     <div>
-      Поиск:
       <input v-model="search">
+      <button>Искать</button>
 
       Регион:
       <select v-model="region">
@@ -81,6 +81,10 @@ export default {
 
     removeSelect(organism) {
       this.selectedOrganisms = this.selectedOrganisms.filter(item => item !== organism)
+    },
+
+    getOrganisms() {
+
     }
   }
 }
