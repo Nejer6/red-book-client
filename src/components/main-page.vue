@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="grid">
     <app-map/>
     <app-menu/>
   </div>
@@ -19,6 +19,9 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+div.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
 </style>
