@@ -1,7 +1,7 @@
 <template>
   <div class="grid">
-    <app-map/>
-    <app-menu/>
+    <app-map :features="features"/>
+    <app-menu v-on:pushOrganismId="getFeature"/>
   </div>
 </template>
 
@@ -11,6 +11,19 @@ import AppMenu from "@/components/app-menu";
 
 export default {
   name: 'main-page',
+
+  data() {
+    return {
+      features: []
+    }
+  },
+
+  methods: {
+    async getFeature(id) {
+      const response = await fetch(`http://localhost:8080/api/v1/animals/${id}`)
+      this.features = await response.json()
+    }
+  },
 
   components: {
     AppMenu,

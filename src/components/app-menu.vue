@@ -62,10 +62,19 @@ import AppOrganism from "@/components/app-organism";
 export default {
   name: "app-menu",
 
+  emits: [
+      "pushOrganismId"
+  ],
+
   data() {
     return {
-      allOrganisms: [{id: 1, nameRussian: "Fish"}, {id: 2, nameRussian: "Crab"}, {id: 3, nameRussian: "Cat"}],
       selectedOrganisms: [],
+      allOrganisms: [{
+        "id": 14,
+        "name": "Somateria mollissima Linnaeus, 1758",
+        "nameRu": "Обыкновенная гага",
+        "rare": "5"
+      }],
       search: "",
       region: "",
       page: 1,
@@ -88,22 +97,26 @@ export default {
   methods: {
     selectOrganism(organism) {
       let select = false
+
       this.selectedOrganisms.forEach(item => {
         if (item.id === organism.id) select = true
       })
+
       if (!select) {
         this.selectedOrganisms.push(organism)
+        this.$emit("pushOrganismId", organism.id)
       }
     },
 
     removeSelect(organism) {
-      this.selectedOrganisms = this.selectedOrganisms.filter(item => item.nameRussian !== organism.nameRussian)
+      this.selectedOrganisms = this.selectedOrganisms.filter(item => item.id !== organism.id)
+      this.$emit("removeOrganism", organism)
     },
 
     async getOrganisms() {
-      const count = 2;
+      const count = 10;
       const offset = (this.page - 1) * count
-      const response = await fetch(`http://localhost:8080/api/v1/organisms?offset=${offset}&count=${count + 1}&search=${this.search}`);
+      const response = await fetch(`http://localhost:8080/api/v1/animals?offset=${offset}&count=${count + 1}&search=${this.search}`);
       const result = await response.json()
 
       if (result.length > count) {

@@ -1,7 +1,9 @@
 <template>
-
-<p>{{organism.nameRussian}}</p>
-
+  <div>
+    <p>{{ organism.nameRu }}</p>
+    <p>{{ organism.name }}</p>
+    <p>Редкость: {{ organism.rare }}</p>
+  </div>
 </template>
 
 <script>
