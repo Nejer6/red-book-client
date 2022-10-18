@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding: 40px 30px">
     <div v-if="!isEmptySelected">
       <div>
         <p>Выбранные: </p>
@@ -11,35 +11,14 @@
                     @click="removeSelect(organism)"/>
     </div>
 
-    <!--Поисковик и фильтры-->
+    <!--Поисковик-->
     <div>
       <input v-model="search" v-on:keyup.enter="getOrganisms">
       <button @click="getOrganisms">Искать</button>
-
-      Регион:
-      <select v-model="region">
-        <option>Любая</option>
-        <option>Мурманская область</option>
-        <option>Архангельская область</option>
-        <option>Республика Карелия</option>
-        <option>Республика Коми</option>
-        <option>Ненецкий автономный округ</option>
-        <option>Ямало-ненецкий автономный округ</option>
-        <option>Красноярский край</option>
-        <option>Республика Саха (Якутия)</option>
-        <option>Чукотский автономный округ</option>
-      </select>
-
-      <!--todo      Царство:-->
-      <!--      <select>-->
-      <!--        <option></option>-->
-      <!--      </select>-->
-
     </div>
 
     <div>
-      <p>Все: </p>
-      <button/>
+      <p style="font-size: 17pt; margin: 20px 0"><b>Все: </b></p>
     </div>
     <div v-for="organism in allOrganisms"
          :key="organism.id">
@@ -63,7 +42,8 @@ export default {
   name: "app-menu",
 
   emits: [
-      "pushOrganismId"
+      "pushOrganismId",
+      "removeOrganism"
   ],
 
   data() {
@@ -110,7 +90,7 @@ export default {
 
     removeSelect(organism) {
       this.selectedOrganisms = this.selectedOrganisms.filter(item => item.id !== organism.id)
-      this.$emit("removeOrganism", organism)
+      this.$emit("removeOrganism", organism.id)
     },
 
     async getOrganisms() {
