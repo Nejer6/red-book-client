@@ -16,8 +16,8 @@
 
         <!--Поисковик-->
         <div style="display: flex; justify-content: space-around">
-          <input v-model="search" v-on:keyup.enter="getOrganisms" style="width: 85%">
-          <button @click="getOrganisms" class="button" style="margin-left: 10px">Искать</button>
+          <input v-model="search" v-on:keyup.enter="searchOrganisms" style="width: 85%">
+          <button @click="searchOrganisms" class="button" style="margin-left: 10px">Искать</button>
         </div>
 
         <div>
@@ -114,6 +114,11 @@ export default {
       }
 
       this.allOrganisms = result
+    },
+
+    searchOrganisms() {
+      this.page = 1
+      this.getOrganisms()
     }
   },
 
