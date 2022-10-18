@@ -59,6 +59,7 @@ export default {
         "id": 14,
         "name": "Somateria mollissima Linnaeus, 1758",
         "nameRu": "Обыкновенная гага",
+        "kingdom": "Животные",
         "rare": "5"
       }],
       search: "",
