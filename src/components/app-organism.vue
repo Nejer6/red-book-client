@@ -1,5 +1,5 @@
 <template>
-  <div style="background-color: #F5DDAA; margin-bottom: 15px; padding: 5px; border-radius: 5px">
+  <div style="margin-bottom: 15px; padding: 5px; border-radius: 5px">
     <p style="font-size: 15pt"><b>{{ organism.nameRu }}</b></p>
     <hr>
     <p>{{ organism.name }}</p>

@@ -1,37 +1,43 @@
 <template>
-  <div style="padding: 40px 30px">
-    <div v-if="!isEmptySelected">
+  <div style="height: 100%; overflow-y: scroll">
+    <div style="padding: 40px 30px; height: 100%">
       <div>
-        <p>Выбранные: </p>
-        <button/>
+        <div v-if="!isEmptySelected">
+          <div>
+            <p class="label"><b>Выбранные: </b></p>
+            <button/>
+          </div>
+          <app-organism v-for="organism in selectedOrganisms"
+                        :key="organism.id"
+                        :organism="organism"
+                        @click="removeSelect(organism)"
+                        style="background-color: #B0DF93"/>
+        </div>
+
+        <!--Поисковик-->
+        <div style="display: flex; justify-content: space-around">
+          <input v-model="search" v-on:keyup.enter="getOrganisms" style="width: 85%">
+          <button @click="getOrganisms" class="button" style="margin-left: 10px">Искать</button>
+        </div>
+
+        <div>
+          <p class="label"><b>Все: </b></p>
+        </div>
+        <div v-for="organism in allOrganisms"
+             :key="organism.id">
+          <app-organism :organism="organism"
+                        style="background-color: #F5DDAA"
+                        @click="selectOrganism(organism)"/>
+        </div>
       </div>
-      <app-organism v-for="organism in selectedOrganisms"
-                    :key="organism.id"
-                    :organism="organism"
-                    @click="removeSelect(organism)"/>
-    </div>
 
-    <!--Поисковик-->
-    <div>
-      <input v-model="search" v-on:keyup.enter="getOrganisms">
-      <button @click="getOrganisms">Искать</button>
-    </div>
+      <div style="display: flex; justify-content: space-around">
+        <button class="button" @click="page--" v-if="page > 1">Назад</button>
+        <p style="margin: 0 5px; font-size: 15pt">Страница: {{ page }}</p>
+        <button class="button" @click="page++" v-if="hasNextPage">Вперед</button>
+      </div>
 
-    <div>
-      <p style="font-size: 17pt; margin: 20px 0"><b>Все: </b></p>
     </div>
-    <div v-for="organism in allOrganisms"
-         :key="organism.id">
-      <app-organism :organism="organism"
-                    @click="selectOrganism(organism)"/>
-    </div>
-
-    <div>
-      Страница: {{ page }}
-      <button @click="page--" v-if="page > 1">Назад</button>
-      <button @click="page++" v-if="hasNextPage">Вперед</button>
-    </div>
-
   </div>
 </template>
 
@@ -119,5 +125,16 @@ export default {
 </script>
 
 <style scoped>
+  .button {
+    padding: 3px;
+    background: #D6AB78;
+    border: 0;
+    border-radius: 3px;
+    font-size: 15pt;
+  }
 
+  p.label {
+    font-size: 17pt;
+    margin: 20px 0
+  }
 </style>
