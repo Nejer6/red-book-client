@@ -1,27 +1,20 @@
 <template>
-  <div id="grid">
-    <app-map></app-map>
-    <app-menu></app-menu>
+  <div style="height: 100%">
+    <main-page/>
   </div>
 </template>
 
 <script>
-import AppMenu from "@/components/app-menu";
-import AppMap from "@/components/app-map";
+import MainPage from "@/components/main-page";
 
 export default {
   name: 'App',
   components: {
-    AppMap,
-    AppMenu
+    MainPage
   }
 }
 </script>
 
-<style scoped>
-  #grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    height: 100%;
-  }
+<style>
+
 </style>
