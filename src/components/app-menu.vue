@@ -20,7 +20,7 @@
           <button @click="searchOrganisms" class="button" style="margin-left: 10px">Искать</button>
         </div>
 
-        <div style="display: flex; justify-content: space-evenly">
+        <div style="display: flex; justify-content: space-evenly; margin-top: 10px">
           <div>
             <p>Царство</p>
             <select class="button" v-model="kingdom" style="font-size: 12pt">
