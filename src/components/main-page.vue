@@ -56,7 +56,7 @@ export default {
 
   methods: {
     async getFeature(id) {
-      const response = await fetch(`http://localhost:8080/api/v1/animals/${id}`)
+      const response = await fetch(`http://192.168.0.107:8080/api/v1/animals/${id}`)
       const json = await response.json()
 
       const layer = L.geoJSON(json, {

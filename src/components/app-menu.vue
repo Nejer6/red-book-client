@@ -129,7 +129,7 @@ export default {
     async getOrganisms() {
       const count = 10;
       const offset = (this.page - 1) * count
-      let url = `http://localhost:8080/api/v1/animals?offset=${offset}&count=${count + 1}&search=${this.search}&sort=${this.sortType}`
+      let url = `http://192.168.0.107:8080/api/v1/animals?offset=${offset}&count=${count + 1}&search=${this.search}&sort=${this.sortType}`
       if (this.kingdom !== "Любое") {
         url += `&kingdom=${this.kingdom}`
       }
