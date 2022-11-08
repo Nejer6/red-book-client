@@ -5,6 +5,7 @@
     <p>{{ organism.name }}</p>
     <p>Царство: {{ organism.kingdom }}</p>
     <p>Редкость: {{ organism.rare }}</p>
+    <p>Регион: {{ organism.region }}</p>
   </div>
 </template>
 
@@ -28,5 +29,9 @@ hr {
 
 .organism p {
   margin-bottom: 5px;
+}
+
+div {
+  background-color: #F5DDAA
 }
 </style>

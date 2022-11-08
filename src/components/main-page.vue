@@ -23,7 +23,8 @@ export default {
   mounted() {
     this.map = new L.Map('map', {
       center: [70.76, 104.68],
-      zoom: 4
+      zoom: 4,
+      //crs: L.CRS.EPSG3857
     })
     // Creating a Layer object
     const layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
@@ -39,7 +40,8 @@ export default {
       let lgndDiv = L.DomUtil.create('div', 'infolgnd'),
           labels = [];
       labels.push('<b>Редкость</b>')
-      labels.push('<div class="circle" style="background: #ff0101; text-align: center"> 1')
+      labels.push('<div class="circle" style="background: #000000; text-align: center; color: darkgray"> 0')
+      labels.push('<div class="circle" style="background: #ff0101; color: black"> 1')
       labels.push('<div class="circle" style="background: #f37101"> 2')
       labels.push('<div class="circle" style="background: #eaac00"> 3')
       labels.push('<div class="circle" style="background: #e6d600"> 4')
@@ -56,7 +58,7 @@ export default {
 
   methods: {
     async getFeature(id) {
-      const response = await fetch(`http://192.168.0.107:8080/api/v1/animals/${id}`)
+      const response = await fetch(`http://136.169.223.99:8080/api/v1/animals/${id}`)
       const json = await response.json()
 
       const layer = L.geoJSON(json, {
@@ -77,6 +79,8 @@ export default {
               return {color: "#acff01"}
             case "7":
               return {color: "#2cff01"}
+            case "0":
+              return {color: "#000000"}
           }
         },
         onEachFeature: function (feature, layer) {

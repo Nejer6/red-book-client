@@ -2,42 +2,52 @@
   <div style="height: 100%; overflow-y: scroll">
     <div style="padding: 40px 30px; height: 100%">
       <div>
-        <div v-if="!isEmptySelected">
-          <div>
-            <p class="label"><b>Выбранные: </b></p>
-            <button/>
-          </div>
-          <app-organism v-for="organism in selectedOrganisms"
-                        :key="organism.id"
-                        :organism="organism"
-                        @click="removeSelect(organism)"
-                        style="background-color: #B0DF93"/>
-        </div>
-
         <!--Поисковик-->
         <div style="display: flex; justify-content: space-around">
           <input v-model="search" v-on:keyup.enter="searchOrganisms" style="width: 85%">
           <button @click="searchOrganisms" class="button" style="margin-left: 10px">Искать</button>
         </div>
 
-        <div style="display: flex; justify-content: space-evenly; margin-top: 10px">
-          <div>
-            <p>Царство</p>
-            <select class="button" v-model="kingdom" style="font-size: 12pt">
-              <option>Любое</option>
-              <option>Грибы</option>
-              <option>Животные</option>
-              <option>Растения</option>
-            </select>
+        <div>
+          <div style="display: flex; justify-content: space-evenly; margin-top: 10px">
+            <div>
+              <p>Царство</p>
+              <select class="button" v-model="kingdom" style="font-size: 12pt">
+                <option>Любое</option>
+                <option>Грибы</option>
+                <option>Животные</option>
+                <option>Растения</option>
+                <option>Лишайники</option>
+              </select>
+            </div>
+
+            <div>
+              <p>Редкость</p>
+              <select class="button" v-model="sort" style="font-size: 12pt">
+                <option>По убыванию</option>
+                <option>По возрастанию</option>
+              </select>
+            </div>
           </div>
 
-          <div>
-            <p>Редкость</p>
-            <select class="button" v-model="sort" style="font-size: 12pt">
-              <option>По убыванию</option>
-              <option>По возрастанию</option>
-            </select>
+          <div style="display: flex; justify-content: space-around">
+            <div>
+              <p>Регион</p>
+              <select class="button" style="font-size: 12pt" v-model="region">
+                <option>Любой</option>
+                <option>Архангельская область</option>
+                <option>Мурманская область</option>
+                <option>Республика Карелия</option>
+                <option>Республика Коми</option>
+                <option>Ненецкий автономный округ</option>
+                <option>Ямало-Ненецкий автономный округ</option>
+                <option>Красноярский край</option>
+                <option>Республика Саха</option>
+                <option>Чукотский автономный округ</option>
+              </select>
+            </div>
           </div>
+
         </div>
 
         <div>
@@ -46,7 +56,7 @@
         <div v-for="organism in allOrganisms"
              :key="organism.id">
           <app-organism :organism="organism"
-                        style="background-color: #F5DDAA"
+                       :class="{ selected: idsSelected.includes(organism.id) }"
                         @click="selectOrganism(organism)"/>
         </div>
       </div>
@@ -55,6 +65,19 @@
         <button class="button" @click="page--" v-if="page > 1">Назад</button>
         <p style="margin: 0 5px; font-size: 15pt">Страница: {{ page }}</p>
         <button class="button" @click="page++" v-if="hasNextPage">Вперед</button>
+      </div>
+
+      <!--Выбранные-->
+      <div v-if="!isEmptySelected">
+        <div>
+          <p class="label"><b>Выбранные: </b></p>
+          <button/>
+        </div>
+        <app-organism v-for="organism in selectedOrganisms"
+                      :key="organism.id"
+                      :organism="organism"
+                      @click="removeSelect(organism)"
+                      style="background-color: #B0DF93"/>
       </div>
 
     </div>
@@ -83,11 +106,12 @@ export default {
         "rare": "5"
       }],
       search: "",
-      region: "",
+      region: "Любой",
       page: 1,
       hasNextPage: false,
       kingdom: "Любое",
       sort: "По убыванию",
+      idsSelected: []
     }
   },
 
@@ -116,12 +140,16 @@ export default {
       })
 
       if (!select) {
+        this.idsSelected.push(organism.id)
         this.selectedOrganisms.push(organism)
         this.$emit("pushOrganismId", organism.id)
+      } else {
+        this.removeSelect(organism)
       }
     },
 
     removeSelect(organism) {
+      this.idsSelected = this.idsSelected.filter(item => item !== organism.id)
       this.selectedOrganisms = this.selectedOrganisms.filter(item => item.id !== organism.id)
       this.$emit("removeOrganism", organism.id)
     },
@@ -129,10 +157,14 @@ export default {
     async getOrganisms() {
       const count = 10;
       const offset = (this.page - 1) * count
-      let url = `http://192.168.0.107:8080/api/v1/animals?offset=${offset}&count=${count + 1}&search=${this.search}&sort=${this.sortType}`
+      let url = `http://136.169.223.99:8080/api/v1/animals?offset=${offset}&count=${count + 1}&search=${this.search}&sort=${this.sortType}`
       if (this.kingdom !== "Любое") {
         url += `&kingdom=${this.kingdom}`
       }
+      if (this.region !== "Любой") {
+        url += `&region=${this.region}`
+      }
+
       const response = await fetch(url);
       const result = await response.json()
 
@@ -163,6 +195,10 @@ export default {
 
     sort() {
       this.searchOrganisms()
+    },
+
+    region() {
+      this.searchOrganisms()
     }
   }
 }
@@ -180,5 +216,9 @@ export default {
 p.label {
   font-size: 17pt;
   margin: 20px 0
+}
+
+.selected {
+  background-color: #B0DF93
 }
 </style>
