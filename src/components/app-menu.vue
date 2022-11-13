@@ -48,6 +48,14 @@
             </div>
           </div>
 
+          <!--Отображение арктики-->
+          <div style="display: flex; justify-content: space-around">
+            <div style="margin-top: 5px">
+              <input type="checkbox" style="height: 1.5em; width: 1.5em; margin-right: 5px"  v-model="showArcticTerritory">
+              <label style="font-size: 12pt">отображение границ Арктической зоны</label>
+            </div>
+          </div>
+
         </div>
 
         <div>
@@ -111,7 +119,8 @@ export default {
       hasNextPage: false,
       kingdom: "Любое",
       sort: "По убыванию",
-      idsSelected: []
+      idsSelected: [],
+      showArcticTerritory: true
     }
   },
 
@@ -199,6 +208,10 @@ export default {
 
     region() {
       this.searchOrganisms()
+    },
+
+    showArcticTerritory() {
+      this.$emit("showArcticTerritory", this.showArcticTerritory)
     }
   }
 }

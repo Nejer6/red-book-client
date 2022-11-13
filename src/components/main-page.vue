@@ -1,7 +1,9 @@
 <template>
   <div class="grid" style="height: 100%;">
     <div id="map"></div>
-    <app-menu v-on:pushOrganismId="getFeature" v-on:removeOrganism="removeOrganism"/>
+    <app-menu v-on:pushOrganismId="getFeature"
+              v-on:removeOrganism="removeOrganism"
+              v-on:showArcticTerritory="showArcticTerritory"/>
   </div>
 </template>
 
@@ -16,7 +18,8 @@ export default {
     return {
       features: [],
       layers: [],
-      map: {}
+      map: {},
+      arcticTerritoryLayer: {}
     }
   },
 
@@ -54,9 +57,26 @@ export default {
     }
 
     lgnd.addTo(this.map)
+
+    this.getArcticTerritory()
   },
 
   methods: {
+    async getArcticTerritory() {
+      const response = await fetch("http://136.169.223.99:8080/api/v1/arctic-territory")
+      const json = await response.json()
+
+      const layer = L.geoJSON(json, {
+        style: {
+          color: "#1a31db",
+          fillOpacity: 0
+        }
+      })
+
+      this.arcticTerritoryLayer = layer
+      layer.addTo(this.map)
+    },
+
     async getFeature(id) {
       const response = await fetch(`http://136.169.223.99:8080/api/v1/animals/${id}`)
       const json = await response.json()
@@ -98,6 +118,14 @@ export default {
             }
           }
       )
+    },
+
+    showArcticTerritory(display) {
+      if (display) {
+        this.arcticTerritoryLayer.addTo(this.map)
+      } else {
+        this.map.removeLayer(this.arcticTerritoryLayer)
+      }
     }
   },
 
