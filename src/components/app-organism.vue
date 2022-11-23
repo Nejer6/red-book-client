@@ -6,6 +6,7 @@
     <p>Царство: {{ organism.kingdom }}</p>
     <p>Редкость: {{ organism.rare }}</p>
     <p>Регион: {{ organism.region }}</p>
+    <p v-if="organism.animalClass !== null">Таксон: {{ organism.animalClass }}</p>
   </div>
 </template>
 

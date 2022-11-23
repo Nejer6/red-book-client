@@ -32,6 +32,33 @@
 
           <div style="display: flex; justify-content: space-around">
             <div>
+              <div v-if="kingdom === 'Животные'">
+                <p>Таксон</p>
+                <select class="button" style="font-size: 12pt" v-model="animalClass">
+                  <option>Любой</option>
+                  <option>Птицы</option>
+                  <option>Рыбы</option>
+                  <option>Насекомые</option>
+                  <option>Млекопитающие</option>
+                  <option>Пресмыкающиеся</option>
+                  <option>Беспозвоночные</option>
+                  <option>Земноводные</option>
+                  <option>Членистоногие (без насекомых)</option>
+                </select>
+              </div>
+              <div v-if="kingdom === 'Растения'">
+                <p>Таксон</p>
+                <select class="button" style="font-size: 12pt" v-model="animalClass">
+                  <option>Любой</option>
+                  <option>Покрытосеменные</option>
+                  <option>Мхи</option>
+                  <option>Водоросли</option>
+                  <option>Папоротники, хвощи, плауновидные</option>
+                  <option>Микроорганизмы</option>
+                  <option>Голосеменные</option>
+                </select>
+              </div>
+
               <p>Регион</p>
               <select class="button" style="font-size: 12pt" v-model="region">
                 <option>Любой</option>
@@ -111,13 +138,15 @@ export default {
         "name": "Somateria mollissima Linnaeus, 1758",
         "nameRu": "Обыкновенная гага",
         "kingdom": "Животные",
-        "rare": "5"
+        "rare": "5",
+        "animalClass": null
       }],
       search: "",
       region: "Любой",
       page: 1,
       hasNextPage: false,
       kingdom: "Любое",
+      animalClass: "Любой",
       sort: "По убыванию",
       idsSelected: [],
       showArcticTerritory: true
@@ -173,6 +202,9 @@ export default {
       if (this.region !== "Любой") {
         url += `&region=${this.region}`
       }
+      if (this.animalClass !== "Любой") {
+        url += `&animalClass=${this.animalClass}`
+      }
 
       const response = await fetch(url);
       const result = await response.json()
@@ -199,6 +231,11 @@ export default {
     },
 
     kingdom() {
+      this.animalClass = "Любой"
+      this.searchOrganisms()
+    },
+
+    animalClass() {
       this.searchOrganisms()
     },
 
