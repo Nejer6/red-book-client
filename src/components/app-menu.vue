@@ -41,7 +41,7 @@
                   <option>Насекомые</option>
                   <option>Млекопитающие</option>
                   <option>Пресмыкающиеся</option>
-                  <option>Беспозвоночные</option>
+                  <option>Беспозвоночные (без членистоногих)</option>
                   <option>Земноводные</option>
                   <option>Членистоногие (без насекомых)</option>
                 </select>
@@ -54,7 +54,7 @@
                   <option>Мхи</option>
                   <option>Водоросли</option>
                   <option>Папоротники, хвощи, плауновидные</option>
-                  <option>Микроорганизмы</option>
+                  <option>Цианобактерии</option>
                   <option>Голосеменные</option>
                 </select>
               </div>
@@ -81,6 +81,12 @@
               <input type="checkbox" style="height: 1.5em; width: 1.5em; margin-right: 5px"  v-model="showArcticTerritory">
               <label style="font-size: 12pt">отображение границ Арктической зоны</label>
             </div>
+          </div>
+
+          <!--Скрыть|Показать-->
+          <div style="display: flex; justify-content: space-around">
+            <button class="button" style="font-size: 12pt" @click="getAllOrganisms">Отобразить все найденные</button>
+            <button class="button" style="font-size: 12pt" v-if="!isEmptySelected" @click="clearSelected">Скрыть все</button>
           </div>
 
         </div>
@@ -170,6 +176,12 @@ export default {
   },
 
   methods: {
+    clearSelected() {
+      this.selectedOrganisms.forEach(selected => {
+        this.removeSelect(selected)
+      })
+    },
+
     selectOrganism(organism) {
       let select = false
 
@@ -195,7 +207,7 @@ export default {
     async getOrganisms() {
       const count = 10;
       const offset = (this.page - 1) * count
-      let url = `http://136.169.223.99:8080/api/v1/animals?offset=${offset}&count=${count + 1}&search=${this.search}&sort=${this.sortType}`
+      let url = `http://localhost:8080/api/v1/animals?offset=${offset}&count=${count + 1}&search=${this.search}&sort=${this.sortType}`
       if (this.kingdom !== "Любое") {
         url += `&kingdom=${this.kingdom}`
       }
@@ -217,6 +229,28 @@ export default {
       }
 
       this.allOrganisms = result
+    },
+
+    async getAllOrganisms() {
+      let url = `http://localhost:8080/api/v1/animals?search=${this.search}`
+      if (this.kingdom !== "Любое") {
+        url += `&kingdom=${this.kingdom}`
+      }
+      if (this.region !== "Любой") {
+        url += `&region=${this.region}`
+      }
+      if (this.animalClass !== "Любой") {
+        url += `&animalClass=${this.animalClass}`
+      }
+      if (this.sortType === "ASC") {
+        url += `&sort=DESK}`
+      } else {
+        url += `&sort=ASC`
+      }
+      const response = await fetch(url);
+      const result = await response.json()
+
+      result.forEach(organism => this.selectOrganism(organism))
     },
 
     searchOrganisms() {

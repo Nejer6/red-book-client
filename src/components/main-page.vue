@@ -19,7 +19,8 @@ export default {
       features: [],
       layers: [],
       map: {},
-      arcticTerritoryLayer: {}
+      arcticTerritoryLayer: {},
+      lastLayer: {}
     }
   },
 
@@ -58,14 +59,28 @@ export default {
 
     lgnd.addTo(this.map)
 
+    const tooltip = L.control({
+      position: "bottomleft"
+    })
+
+    tooltip.onAdd = function () {
+      const tooltipDiv = L.DomUtil.create('div', 'tooltip')
+      tooltipDiv.style.background = "white"
+      tooltipDiv.style.fontSize = "12pt"
+      tooltipDiv.style.border = "1px solid black"
+      return tooltipDiv
+    }
+
+    tooltip.addTo(this.map)
+
     this.getArcticTerritory()
   },
 
   methods: {
     async getArcticTerritory() {
-      const response = await fetch("http://136.169.223.99:8080/api/v1/arctic-territory")
+      const response = await fetch("http://localhost:8080/api/v1/arctic-territory")
       const json = await response.json()
-
+      this.antimeridian(json.features[0].geometry.coordinates)
       const layer = L.geoJSON(json, {
         style: {
           color: "#1a31db",
@@ -78,15 +93,16 @@ export default {
     },
 
     async getFeature(id) {
-      const response = await fetch(`http://136.169.223.99:8080/api/v1/animals/${id}`)
+      const response = await fetch(`http://localhost:8080/api/v1/animals/${id}`)
       const json = await response.json()
-
+      this.antimeridian(json.geometry.coordinates)
+      const vue = this
       const layer = L.geoJSON(json, {
         style: function (feature) {
-          const rare = feature.properties.rare
-          if (rare.includes("б") || rare.includes("а") || rare === "1") {
-            return {color: "#ff0101"}
-          } else switch (rare) {
+          const rare = feature.properties.rare[0]
+          switch (rare) {
+            case  "1":
+              return {color: "#ff0101"}
             case "2":
               return {color: "#f37101"}
             case "3":
@@ -104,9 +120,30 @@ export default {
           }
         },
         onEachFeature: function (feature, layer) {
-          layer.bindPopup(feature.properties.nameRu)
+           //layer.bindPopup(feature.properties.nameRu)
+          //layer.bindTooltip(feature.properties.nameRu)
+          layer.on('click', function () {
+            layer.bringToBack()
+            vue.arcticTerritoryLayer.bringToBack()
+          })
+
+          const defaultColor = layer.options.color
+          const tooltip = document.querySelector(".tooltip")
+          layer.on('mouseover', function () {
+            layer.bringToFront()
+            //layer.openPopup()
+            layer.setStyle({weight: 3, color: "black", fillColor: defaultColor})
+            tooltip.innerHTML = feature.properties.nameRu + "<br> Редкость: " + feature.properties.rare
+          })
+
+          layer.on('mouseout', function () {
+            //layer.closePopup()
+           tooltip.innerHTML = ""
+            layer.setStyle({weight: 3, color: defaultColor})
+          })
         }
       })
+
       this.layers.push({id: id, layer: layer})
       layer.addTo(this.map)
     },
@@ -125,6 +162,20 @@ export default {
         this.arcticTerritoryLayer.addTo(this.map)
       } else {
         this.map.removeLayer(this.arcticTerritoryLayer)
+      }
+    },
+
+    antimeridian(elem) {
+      if (Array.isArray(elem)) {
+        for (var i = 0; i < elem.length; i++) {
+          if (Array.isArray(elem[i][0])) {
+            this.antimeridian(elem[i]);
+          } else {
+            if (elem[i][0] < 0) {
+              elem[i][0] = 180 + (180 + elem[i][0]);
+            }
+          }
+        }
       }
     }
   },
