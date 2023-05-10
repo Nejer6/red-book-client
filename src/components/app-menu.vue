@@ -72,6 +72,13 @@
                 <option>Республика Саха</option>
                 <option>Чукотский автономный округ</option>
               </select>
+
+              <p>Подложка</p>
+              <select class="button" style="font-size: 12pt" v-model="tileLayer">
+                <option>По умолчанию</option>
+                <option>Физическая карта</option>
+                <option>Зоны и типы поясности растительности России</option>
+              </select>
             </div>
           </div>
 
@@ -80,6 +87,14 @@
             <div style="margin-top: 5px">
               <input type="checkbox" style="height: 1.5em; width: 1.5em; margin-right: 5px"  v-model="showArcticTerritory">
               <label style="font-size: 12pt">отображение границ Арктической зоны</label>
+            </div>
+          </div>
+
+          <!--Отображение охраняемых территорий-->
+          <div style="display: flex; justify-content: space-around">
+            <div style="margin-top: 5px">
+              <input type="checkbox" style="height: 1.5em; width: 1.5em; margin-right: 5px"  v-model="showOOPT">
+              <label style="font-size: 12pt">отображение особо охраняемых территорий России</label>
             </div>
           </div>
 
@@ -133,7 +148,8 @@ export default {
 
   emits: [
     "pushOrganismId",
-    "removeOrganism"
+    "removeOrganism",
+    "showTileLayer"
   ],
 
   data() {
@@ -155,7 +171,9 @@ export default {
       animalClass: "Любой",
       sort: "По убыванию",
       idsSelected: [],
-      showArcticTerritory: true
+      showArcticTerritory: true,
+      showOOPT: false,
+      tileLayer: "По умолчанию"
     }
   },
 
@@ -207,7 +225,7 @@ export default {
     async getOrganisms() {
       const count = 10;
       const offset = (this.page - 1) * count
-      let url = `http://localhost:8080/api/v1/animals?offset=${offset}&count=${count + 1}&search=${this.search}&sort=${this.sortType}`
+      let url = `/api/v1/animals?offset=${offset}&count=${count + 1}&search=${this.search}&sort=${this.sortType}`
       if (this.kingdom !== "Любое") {
         url += `&kingdom=${this.kingdom}`
       }
@@ -232,7 +250,7 @@ export default {
     },
 
     async getAllOrganisms() {
-      let url = `http://localhost:8080/api/v1/animals?search=${this.search}`
+      let url = `/api/v1/animals?search=${this.search}`
       if (this.kingdom !== "Любое") {
         url += `&kingdom=${this.kingdom}`
       }
@@ -283,6 +301,14 @@ export default {
 
     showArcticTerritory() {
       this.$emit("showArcticTerritory", this.showArcticTerritory)
+    },
+
+    showOOPT() {
+      this.$emit("showOOPT", this.showOOPT)
+    },
+
+    tileLayer() {
+      this.$emit("showTileLayer", this.tileLayer)
     }
   }
 }
